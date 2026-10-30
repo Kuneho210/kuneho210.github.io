@@ -17,9 +17,9 @@
         if (btn) btn.textContent = isDark ? '☀' : '☾';
 
         if (logo) {
-            logo.src = isDark
-                ? '/images/logo_dark.png'
-                : '/images/logo_light.png';
+    logo.src = isDark
+        ? '/images/logo_white.png'
+        : '/images/logo_black.png';
         }
 
         if (stars) {
@@ -46,17 +46,8 @@
     }
 
     // Load theme
-    let saved = null;
-
-    try {
-        saved = localStorage.getItem('theme');
-    } catch (e) {}
-
-    const initialTheme = saved ||
-        root.getAttribute('data-theme') ||
-        (window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'dark'
-            : 'light');
+    
+    apply('dark');
 
     apply(initialTheme);
 
