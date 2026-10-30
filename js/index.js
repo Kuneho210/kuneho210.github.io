@@ -10,13 +10,13 @@
             if (btn) btn.textContent = '☀';
 
             // White logo for dark mode
-            if (logo) logo.src = 'images/logo-dark.png';
+            if (logo) logo.src = 'images/logo_dark.png';
         } else {
             root.setAttribute('data-theme', 'light');
             if (btn) btn.textContent = '☾';
 
             // Black logo for light mode
-            if (logo) logo.src = 'images/logo-light.png';
+            if (logo) logo.src = 'images/logo_light.png';
         }
     }
 
