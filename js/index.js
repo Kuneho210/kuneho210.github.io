@@ -8,27 +8,34 @@
 
     let flashTimer = null;
 
-    // Apply theme
+    // Change theme
     function apply(mode, showFlash = false) {
         const isDark = mode === 'dark';
 
         root.setAttribute('data-theme', mode);
 
-        if (btn) btn.textContent = isDark ? '☀' : '☾';
-
-        if (logo) {
-    logo.src = isDark
-        ? '/images/logo_white.png'
-        : '/images/logo_black.png';
+        if (btn) {
+            btn.textContent = isDark ? '☀' : '☾';
+            btn.setAttribute(
+                'aria-label',
+                isDark ? 'Switch to light mode' : 'Switch to dark mode'
+            );
         }
 
+        // Switch logo
+        if (logo) {
+            logo.src = isDark
+                ? '/images/logo_dark.png'
+                : '/images/logo_white.png';
+        }
+
+        // Stars
         if (stars) {
             stars.style.display = isDark ? 'block' : 'none';
         }
 
-        // Reset flashbang
+        // Flashbang
         clearTimeout(flashTimer);
-        flashTimer = null;
 
         if (flashbang) {
             flashbang.classList.remove('playing');
@@ -45,11 +52,8 @@
         }
     }
 
-    // Load theme
-    
+    // Start in dark mode
     apply('dark');
-
-    apply(initialTheme);
 
     // Theme button
     if (btn) {
@@ -58,14 +62,10 @@
             const next = current === 'dark' ? 'light' : 'dark';
 
             apply(next, true);
-
-            try {
-                localStorage.setItem('theme', next);
-            } catch (e) {}
         });
     }
 
-    // Stars
+    // Twinkling stars
     if (stars) {
         for (let i = 0; i < 50; i++) {
             const star = document.createElement('div');
