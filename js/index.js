@@ -1,40 +1,87 @@
 
 (function () {
-    var btn = document.getElementById('themeToggle');
-    var root = document.documentElement;
-    var logo = document.getElementById('site-logo');
+    const btn = document.getElementById('themeToggle');
+    const root = document.documentElement;
+    const logo = document.getElementById('site-logo');
+    const stars = document.getElementById('stars');
+    const flashbang = document.getElementById('flashbang');
+
+    let initialLoad = true;
+    let flashTimer = null;
 
     function apply(mode) {
-        if (mode === 'dark') {
-            root.setAttribute('data-theme', 'dark');
-            if (btn) btn.textContent = '☀';
+        const isDark = mode === 'dark';
 
-            // White logo for dark mode
-            if (logo) logo.src = 'images/logo_dark.png';
-        } else {
-            root.setAttribute('data-theme', 'light');
-            if (btn) btn.textContent = '☾';
+        // Change theme
+        root.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
-            // Black logo for light mode
-            if (logo) logo.src = 'images/logo_light.png';
+        // Change theme button
+        if (btn) {
+            btn.textContent = isDark ? '☀' : '☾';
+        }
+
+        // Switch logo
+        if (logo) {
+            logo.src = isDark
+                ? '/images/logo_dark.png'
+                : '/images/logo_light.png';
+        }
+
+        // Hide stars in light mode
+        if (stars) {
+            stars.style.display = isDark ? 'block' : 'none';
+        }
+
+        // Stop any previous flashbang
+        if (flashTimer !== null) {
+            clearTimeout(flashTimer);
+            flashTimer = null;
+        }
+
+        if (flashbang) {
+            flashbang.classList.remove('playing');
+
+            // Play only when switching to light mode
+            if (!isDark && !initialLoad) {
+                // Restart GIF from the beginning
+                flashbang.src =
+                    '/images/flashbang.gif?t=' + Date.now();
+
+                flashbang.classList.add('playing');
+
+                // Hide after 2 seconds
+                flashTimer = setTimeout(function () {
+                    flashbang.classList.remove('playing');
+                    flashTimer = null;
+                }, 2000);
+            }
         }
     }
 
-    var saved = null;
+    // Load saved theme
+    let saved = null;
 
     try {
         saved = localStorage.getItem('theme');
     } catch (e) {}
 
-    apply(saved || root.getAttribute('data-theme') || 'light');
+    const initialTheme =
+        saved ||
+        root.getAttribute('data-theme') ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light');
 
+    apply(initialTheme);
+
+    // Initial setup is finished
+    initialLoad = false;
+
+    // Theme toggle
     if (btn) {
         btn.addEventListener('click', function () {
-            var current = root.getAttribute('data-theme') === 'dark'
-                ? 'dark'
-                : 'light';
-
-            var next = current === 'dark' ? 'light' : 'dark';
+            const current = root.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
 
             apply(next);
 
@@ -43,22 +90,20 @@
             } catch (e) {}
         });
     }
-})();
 
+    // Twinkling stars
+    if (stars) {
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
 
-// TWINKLING STARS
-const starsContainer = document.getElementById("stars");
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            star.style.animationDuration =
+                (2 + Math.random() * 4) + 's';
 
-if (starsContainer) {
-    for (let i = 0; i < 50; i++) {
-        const star = document.createElement("div");
-        star.className = "star";
-
-        star.style.left = Math.random() * 100 + "%";
-        star.style.top = Math.random() * 100 + "%";
-        star.style.animationDelay = Math.random() * 5 + "s";
-        star.style.animationDuration = (2 + Math.random() * 4) + "s";
-
-        starsContainer.appendChild(star);
+            stars.appendChild(star);
+        }
     }
-}
+})();

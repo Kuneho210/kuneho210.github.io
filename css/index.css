@@ -243,9 +243,6 @@
     height: auto;
 }
 
-body.light-mode #site-logo {
-    content: url("../images/logo-light.png");
-}
 
 /* Show stars in dark mode */
 [data-theme="dark"] #stars {
@@ -255,4 +252,15 @@ body.light-mode #site-logo {
 /* Hide stars in light mode */
 [data-theme="light"] #stars {
     display: none;
+}
+
+/* Website logo */
+#site-logo {
+    width: 130%;
+    height: 130%;
+    max-width: none;
+    object-fit: contain;
+    object-position: center;
+    position: relative;
+    z-index: 1;
 }
